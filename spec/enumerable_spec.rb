@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './my_enum'
 
 RSpec.describe Enumerable do
@@ -30,17 +32,17 @@ RSpec.describe Enumerable do
       end
     end
     context 'when an Array is passed' do
-      subject { Array.new(10) { |i| i+=i } }
+      subject { Array.new(10) { |i| i += i } }
       it 'should return a an expected array' do
-        expected = Array.new(10) {1}
-       expect(subject.my_map { 1 }).to eql(expected)
+        expected = Array.new(10) { 1 }
+        expect(subject.my_map { 1 }).to eql(expected)
       end
     end
     context 'when a Hash is passed' do
-      hash = {a: 1, b: 2}
+      hash = { a: 1, b: 2 }
       it 'should return an expected Hash' do
         expected = { a: 2, b: 3 }
-        expect(hash.my_map { |k,v| [k, v+1] }).to eql(expected)
+        expect(hash.my_map { |k, v| [k, v + 1] }).to eql(expected)
       end
     end
   end
@@ -62,6 +64,22 @@ RSpec.describe Enumerable do
       subject { Array.new(10) }
       it 'should return self' do
         expect(subject.my_each {}).to eql(subject)
+      end
+    end
+  end
+
+  describe '#my_select' do
+    context 'when no block is given' do
+      it 'should return an enumerator' do
+        arr = [1, 2, 3, 4]
+        expect(arr.my_select.class).to eql(Enumerator)
+      end
+    end
+    context 'when an array is passed' do
+      subject { Array.new(10) { |i| i } }
+      it 'should return an expected array' do
+        expected = [0, 2, 4, 6, 8]
+        expect(subject.my_select(&:even?)).to eql(expected)
       end
     end
   end

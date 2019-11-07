@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 module Enumerable
+  class Hash
+    def <<(hash)
+      self[hash[0]] = hash[1]
+    end
+  end
   def my_each
     return to_enum unless block_given?
 
@@ -39,5 +44,16 @@ module Enumerable
       i += 1
     end
     self
+  end
+
+  def my_select
+    return to_enum unless block_given?
+
+    new_object = dup
+    result = self.class.new
+    new_object.my_each do |item|
+      result << item if yield(item)
+    end
+    result
   end
 end
