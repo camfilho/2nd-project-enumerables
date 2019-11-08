@@ -120,7 +120,34 @@ module Enumerable
     true
   end
 
-  def my_count(patter = nil)
-    
+  def my_count(item = nil)
+    if item
+      items_counter = 0
+      my_each do |i|
+        items_counter += 1 if item == i
+      end
+      return items_counter
+    elsif block_given?
+      counter = 0
+      new_object = dup
+      new_object.my_each do |i|
+        counter += 1 if yield(i)
+      end
+      return counter
+    end
+    return length unless block_given?
+  end
+
+  def my_inject(initial = self[0], sym)
+    initial = sym unless sym.is_a? Symbol
+    memo = initial.dup
+    my_each do |i|
+      if block_given?
+        memo = yield(memo, i)
+      else
+        memo = memo.send(sym, i)
+      end
+    end
+    memo
   end
 end

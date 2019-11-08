@@ -153,4 +153,46 @@ RSpec.describe Enumerable do
       end
     end
   end
+  describe '#my_count' do
+    context 'when no block is given' do
+      it 'returns the number of items in enum' do
+        array = [1, 2, 3, 4]
+        expect(array.my_count).to equal(array.length)
+      end
+    end
+    context 'when argument  item is given' do
+      it 'returns the number of items that are equal to item' do
+        array = Array.new(10) { |i| i }
+        expect(array.my_count(2)).to eql(1)
+      end
+    end
+    context 'when block is given' do
+      it 'counts the number of elements yielding a true value.' do
+        array = Array.new(10) { |i| i }
+        expect(array.my_count { |i| i > 4 }).to eql(5)
+      end
+      it 'counts the number of Hahs Elements yield true' do
+        hash = {a: 1, b: 2, c: 3}
+        expect(hash.my_count { |_,v| v > 1}).to equal(2)
+      end
+    end
+  end
+  describe '#my_inject' do
+    context 'when no block is passed' do
+      it 'returns (item, sym) sym applied to items' do
+        array = Array.new(10) { |i| i }
+        expect(array.my_inject(0, :+)). to eql(array.sum)
+      end
+      it 'returns (sym) sym applied to enum items' do
+        array = Array.new(10) { |i| i }
+        expect(array.my_inject(:+)). to eql(array.sum)
+      end
+    end
+    context 'when a block and one argument is given' do
+      it 'returns memo with block appied to evey items' do
+        array = Array.new(10) { |i| i }
+        expect(array.my_inject(0) { |sum, n| sum + n }).to eql(array.sum)
+      end
+    end
+  end
 end
