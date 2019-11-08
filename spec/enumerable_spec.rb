@@ -83,4 +83,74 @@ RSpec.describe Enumerable do
       end
     end
   end
+  describe '#my_all?' do
+    context 'when no block is given' do
+      it 'should return true if  none is false' do
+        expect([1, 2].my_all?).to eql(true)
+      end
+    end
+    context 'when a Hash is passed' do
+      it 'returns true if condition is met' do
+        hash = {a: 1, b: 2}
+        expect(hash.my_all? { |key, value| value.positive? })
+      end
+      context 'when an Array is passed' do
+        it 'returns false unless condition met' do
+          array = [1,2,3,4]
+          expect(array.my_all?(&:zero?)).to eql(false)
+        end
+      end
+    end
+  end
+  describe '#my_any' do
+    context 'when no block is given' do
+      it 'should return true if  none is false' do
+        expect([1, 2].my_any?).to eql(true)
+      end
+    end
+    context 'when a Hash is passed' do
+      it 'returns true if condition is met' do
+        hash = {a: 1, b: 2}
+        expect(hash.my_any? { |_, value| value.positive? })
+      end
+      context 'when an Array is passed' do
+        it 'returns true if at least one zero is found' do
+          array = [0,1,1,1]
+          expect(array.my_any?(&:zero?)).to eql(true)
+        end
+      end
+      context 'when a pattern is passed' do
+        it  'returns false for pattern = /y/' do
+          array = %w[ant bear car]
+          expect(array.my_any?(/y/)).to eql(false)
+        end
+      end
+    end
+  end
+  describe '#none?' do
+    context 'when no block is given ' do
+      it 'returns true only if none of the items is true' do
+        array = [nil, nil, nil]
+        expect(array.my_none?).to eql(true)
+      end
+    end
+    context 'when applied to a Hash and block given' do
+      it 'return true if block result false to all items' do
+        hash = {a: 1, b: 2}
+        expect(hash.my_none?{ |k, v| v > 3 }).to eql(true)
+      end
+    end
+    context 'when applied to an Array and block_given' do
+      it 'returns true if block result false to all items' do
+        array = [1,2,3]
+        expect(array.my_none?(&:negative?)).to eql(true)
+      end
+    end
+    context 'when pattern applied' do
+      it 'returns true if patterns doesnt match for call items' do
+        array = %w[ant bear person]
+        expect(array.my_none?(/z/)).to eql(true)
+      end
+    end
+  end
 end

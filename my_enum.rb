@@ -3,7 +3,9 @@
 module Enumerable
   class Hash
     def <<(hash)
-      self[hash[0]] = hash[1]
+      hash.my_each do |key, value|
+        self[key] = value
+      end
     end
   end
   def my_each
@@ -55,5 +57,70 @@ module Enumerable
       result << item if yield(item)
     end
     result
+  end
+
+  def my_all?
+    flag = true
+    block_result = true
+    new_object = dup
+    i = 0
+    while i < length
+      item = new_object.shift
+      block_result = yield(item) if block_given?
+      unless item && block_result
+        flag = false
+        break
+      end
+      i += 1
+    end
+    flag
+  end
+
+  def my_any?(pattern = nil)
+    i = 0
+    if pattern
+      while i < length
+        return true if pattern =~ self[i]
+
+        i += 1
+      end
+    end
+    unless block_given?
+      while i < length
+        return true if self[i]
+
+        i += 1
+      end
+    end
+    new_object = dup
+    while i < length
+      return true if yield(new_object.shift)
+
+      i += 1
+    end
+    false
+  end
+
+  def my_none?(pattern = nil)
+    block_result = false
+    pttrn_result = false
+    object_item = false
+    new_object = dup
+    i = 0
+    while i < length
+      pttrn_result = pattern =~ self[i] if pattern
+      object_item = new_object.shift unless block_given? || pattern
+      block_result = yield(new_object.shift) if block_given?
+      if object_item || block_result || pttrn_result
+        return false
+      end
+
+      i += 1
+    end
+    true
+  end
+
+  def my_count(patter = nil)
+    
   end
 end
