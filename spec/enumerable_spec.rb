@@ -194,5 +194,11 @@ RSpec.describe Enumerable do
         expect(array.my_inject(0) { |sum, n| sum + n }).to eql(array.sum)
       end
     end
+    context 'when only block is given' do
+      it 'returns memo with block applied to every items' do
+        array = Array.new(20) { |i| i }
+        expect(array.my_inject{ |sum, n| sum + n }).to eql(array.sum)
+      end
+    end
   end
 end

@@ -138,16 +138,39 @@ module Enumerable
     return length unless block_given?
   end
 
-  def my_inject(initial = self[0], sym)
-    initial = sym unless sym.is_a? Symbol
-    memo = initial.dup
-    my_each do |i|
-      if block_given?
-        memo = yield(memo, i)
+  def my_inject(*args)
+    new_object = dup
+    if block_given?
+      initial = args[0]
+      memo = initial
+      if initial
+        new_object.my_each do |i|
+          memo = yield(memo, i)
+        end
       else
-        memo = memo.send(sym, i)
+        memo = new_object.shift
+        new_object.my_each do |i|
+          memo = yield(memo, i)
+        end
+      end
+    elsif args[0].is_a? Symbol
+      memo = new_object.shift
+      new_object.my_each do |i|
+        memo = memo.send(args[0], i)
+      end
+    else
+      memo = args[0]
+      method = args[1]
+      new_object.my_each do |i|
+        memo = memo.send(method, i)
       end
     end
     memo
   end
 end
+
+def multiply_els(arr)
+  arr.my_inject { |acc, el| acc * el }
+end
+
+puts multiply_els([2,3,4])
