@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/CaseEquality
+# rubocop:disable Metrics/ModuleLength
 
 class Hash
   def <<(*hash)
@@ -128,6 +128,8 @@ module Enumerable
     memo
   end
 end
+
+# rubocop:enable Metrics/ModuleLength
 
 def multiply_els(arr)
   arr.my_inject { |acc, el| acc * el }
