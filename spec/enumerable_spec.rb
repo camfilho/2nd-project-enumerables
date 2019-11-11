@@ -5,7 +5,7 @@ require './my_enum'
 RSpec.describe Enumerable do
   describe '#my_each' do
     context 'when no block was given' do
-      subject { Array.new(10) { |i| i += 1 } }
+      subject { Array.new(10) { |i| i + 1 } }
       it 'returns an enumerable' do
         expect(subject.my_each.class).to eql(Enumerator)
       end

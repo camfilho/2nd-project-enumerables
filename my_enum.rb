@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # rubocop:disable Style/CaseEquality
-# rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
 class Hash
   def <<(*hash)
@@ -60,107 +59,75 @@ module Enumerable
     result
   end
 
-  def my_all?
-    flag = true
-    block_result = true
-    new_object = dup
-    i = 0
-    while i < length
-      item = new_object.shift
-      block_result = yield(item) if block_given?
-      unless item && block_result
-        flag = false
-        break
+  def my_all?(pattern = nil)
+    if pattern
+      my_each do |i|
+        return false unless i.match? pattern
       end
-      i += 1
-    end
-    flag
-  end
-
-  def my_any?(pattern = nil)
-    ans_pattern = false
-    ans_noblock = false
-    ans_block = false
-    my_each do |i|
-      ans_pattern = true if pattern =~ i
-      ans_noblock = true if i
-      ans_block = true if block_given? && yield(i)
-    end
-    return ans_pattern if pattern
-    return ans_block if block_given?
-
-    ans_noblock
-  end
-
-  def my_none?(pattern = nil)
-    block_result = false
-    pttrn_result = false
-    object_item = false
-    new_object = dup
-    i = 0
-    while i < length
-      pttrn_result = pattern =~ self[i] if pattern
-      object_item = new_object.shift unless block_given? || pattern
-      block_result = yield(new_object.shift) if block_given?
-      if object_item || block_result || pttrn_result
-        return false
+    elsif block_given?
+      my_each do |i|
+        return false unless yield(i)
       end
-
-      i += 1
+    else
+      my_each do |i|
+        return false unless i
+      end
     end
     true
   end
 
-  def my_count(item = nil)
-    if item
-      items_counter = 0
+  def my_any?(pattern = nil)
+    if pattern
       my_each do |i|
-        items_counter += 1 if item == i
+        return true if i.match? pattern
       end
-      return items_counter
     elsif block_given?
-      counter = 0
-      new_object = dup
-      new_object.my_each do |i|
-        counter += 1 if yield(i)
+      my_each do |i|
+        return true if yield(i)
       end
-      return counter
+    else
+      my_each do |i|
+        return true if i
+      end
     end
-    return length unless block_given?
+    false
+  end
+
+  def my_none?(pattern = nil, &block)
+    !my_all?(pattern, &block)
+  end
+
+  def my_count(item = nil)
+    cnt_items = 0
+    new_object = dup
+    new_object.my_each do |i|
+      if block_given?
+        cnt_items += 1 if yield(i)
+      elsif item.nil?
+        cnt_items += 1
+      elsif i == item
+        cnt_items += 1
+      end
+    end
+    cnt_items
   end
 
   def my_inject(*args)
+    arg1 = args[0]
+    arg2 = args[1]
     new_object = dup
-    if block_given?
-      initial = args[0]
-      memo = initial
-      if initial
-        new_object.my_each do |i|
-          memo = yield(memo, i)
-        end
+    memo = arg1.is_a?(Symbol) || arg1.nil? ? new_object.shift : arg1
+    new_object.my_each do |item|
+      if block_given?
+        memo = yield(memo, item)
       else
-        memo = new_object.shift
-        new_object.my_each do |i|
-          memo = yield(memo, i)
-        end
-      end
-    elsif args[0].is_a? Symbol
-      memo = new_object.shift
-      new_object.my_each do |i|
-        memo = memo.send(args[0], i)
-      end
-    else
-      memo = args[0]
-      method = args[1]
-      new_object.my_each do |i|
-        memo = memo.send(method, i)
+        sym = arg1.is_a?(Symbol) ? arg1 : arg2
+        memo = memo.send(sym, item)
       end
     end
     memo
   end
 end
-
-# rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
 def multiply_els(arr)
   arr.my_inject { |acc, el| acc * el }
