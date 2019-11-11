@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable Style/CaseEquality
 
 class Hash
@@ -76,28 +77,18 @@ module Enumerable
   end
 
   def my_any?(pattern = nil)
-    i = 0
-    if pattern
-      while i < length
-        return true if pattern =~ self[i]
-
-        i += 1
-      end
+    ans_pattern = false
+    ans_noblock = false
+    ans_block = false
+    my_each do |i|
+      ans_pattern = true if pattern =~ i
+      ans_noblock = true if i
+      ans_block = true if block_given? && yield(i)
     end
-    unless block_given?
-      while i < length
-        return true if self[i]
+    return ans_pattern if pattern
+    return ans_block if block_given?
 
-        i += 1
-      end
-    end
-    new_object = dup
-    while i < length
-      return true if yield(new_object.shift)
-
-      i += 1
-    end
-    false
+    ans_noblock
   end
 
   def my_none?(pattern = nil)

@@ -40,7 +40,7 @@ RSpec.describe Enumerable do
       end
     end
     context 'when an Array is passed' do
-      subject { Array.new(10) { |i| i += i } }
+      subject { Array.new(10) { |i| i + i } }
       it 'should return a an expected array' do
         expected = Array.new(10) { 1 }
         expect(subject.my_map { 1 }).to eql(expected)
@@ -56,7 +56,7 @@ RSpec.describe Enumerable do
   end
   describe '#my_each_with_index' do
     context 'when no block was given' do
-      subject { Array.new(10) { |i| i += 1 } }
+      subject { Array.new(10) { |i| i + 1 } }
       it 'returns an enumerable' do
         expect(subject.my_each.class).to eql(Enumerator)
       end
