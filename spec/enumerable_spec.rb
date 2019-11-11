@@ -25,6 +25,14 @@ RSpec.describe Enumerable do
     end
   end
   describe '#my_map' do
+    context 'when a proc is passed' do
+      subject { Array.new(10) { |i| i } }
+      it 'should apply the proc on the Object' do
+        expected = [1,2,3,4,5,6,7,8,9,10]
+        proc = Proc.new { |i| i + 1 }
+        expect(subject.my_map(proc)).to eql(expected)
+      end
+    end
     context 'when no block is passed' do
       subject { Array.new(10) }
       it 'should return an Enumerator' do

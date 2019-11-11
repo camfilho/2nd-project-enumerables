@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 # rubocop:disable Style/CaseEquality
 
-module Enumerable
-  class Hash
-    def <<(hash)
-      hash.my_each do |key, value|
-        self[key] = value
-      end
+class Hash
+  def <<(*hash)
+    hash.my_each do |key, value|
+      self[key] = value
     end
   end
+end
+
+module Enumerable
   def my_each
     return to_enum unless block_given?
 
@@ -21,18 +22,15 @@ module Enumerable
     self
   end
 
-  def my_map
-    return to_enum unless block_given?
+  def my_map(proc = nil)
+    return to_enum unless block_given? || proc
 
     copy_arr = dup
     new_object = self.class.new
     0.upto(length - 1) do
-      result = yield(copy_arr.shift)
-      if result.is_a? Array
-        new_object[result[0]] = result[1]
-      else
-        new_object.push result
-      end
+      item = copy_arr.shift
+      result = proc ? proc.call(item) : yield(item)
+      new_object << result
     end
     new_object
   end
