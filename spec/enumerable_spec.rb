@@ -28,8 +28,8 @@ RSpec.describe Enumerable do
     context 'when a proc is passed' do
       subject { Array.new(10) { |i| i } }
       it 'should apply the proc on the Object' do
-        expected = [1,2,3,4,5,6,7,8,9,10]
-        proc = Proc.new { |i| i + 1 }
+        expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        proc = proc { |i| i + 1 }
         expect(subject.my_map(proc)).to eql(expected)
       end
     end
@@ -99,12 +99,12 @@ RSpec.describe Enumerable do
     end
     context 'when a Hash is passed' do
       it 'returns true if condition is met' do
-        hash = {a: 1, b: 2}
-        expect(hash.my_all? { |key, value| value.positive? })
+        hash = { a: 1, b: 2 }
+        expect(hash.my_all? { |_key, value| value.positive? })
       end
       context 'when an Array is passed' do
         it 'returns false unless condition met' do
-          array = [1,2,3,4]
+          array = [1, 2, 3, 4]
           expect(array.my_all?(&:zero?)).to eql(false)
         end
       end
@@ -118,17 +118,17 @@ RSpec.describe Enumerable do
     end
     context 'when a Hash is passed' do
       it 'returns true if condition is met' do
-        hash = {a: 1, b: 2}
+        hash = { a: 1, b: 2 }
         expect(hash.my_any? { |_, value| value.positive? })
       end
       context 'when an Array is passed' do
         it 'returns true if at least one zero is found' do
-          array = [0,1,1,1]
+          array = [0, 1, 1, 1]
           expect(array.my_any?(&:zero?)).to eql(true)
         end
       end
       context 'when a pattern is passed' do
-        it  'returns false for pattern = /y/' do
+        it 'returns false for pattern = /y/' do
           array = %w[ant bear car]
           expect(array.my_any?(/y/)).to eql(false)
         end
@@ -144,13 +144,13 @@ RSpec.describe Enumerable do
     end
     context 'when applied to a Hash and block given' do
       it 'return true if block result false to all items' do
-        hash = {a: 1, b: 2}
-        expect(hash.my_none?{ |k, v| v > 3 }).to eql(true)
+        hash = { a: 1, b: 2 }
+        expect(hash.my_none? { |_k, v| v > 3 }).to eql(true)
       end
     end
     context 'when applied to an Array and block_given' do
       it 'returns true if block result false to all items' do
-        array = [1,2,3]
+        array = [1, 2, 3]
         expect(array.my_none?(&:negative?)).to eql(true)
       end
     end
@@ -180,8 +180,8 @@ RSpec.describe Enumerable do
         expect(array.my_count { |i| i > 4 }).to eql(5)
       end
       it 'counts the number of Hahs Elements yield true' do
-        hash = {a: 1, b: 2, c: 3}
-        expect(hash.my_count { |_,v| v > 1}).to equal(2)
+        hash = { a: 1, b: 2, c: 3 }
+        expect(hash.my_count { |_, v| v > 1 }).to equal(2)
       end
     end
   end
@@ -205,7 +205,7 @@ RSpec.describe Enumerable do
     context 'when only block is given' do
       it 'returns memo with block applied to every items' do
         array = Array.new(20) { |i| i }
-        expect(array.my_inject{ |sum, n| sum + n }).to eql(array.sum)
+        expect(array.my_inject { |sum, n| sum + n }).to eql(array.sum)
       end
     end
   end

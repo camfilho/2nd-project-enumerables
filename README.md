@@ -63,6 +63,11 @@ To get a local copy up and running follow these simple steps.
 
 Clone or fork the repo <https://github.com/camfilho/2nd-project-enumerables>
 
+The the file with the method is located in the main folder, and it is called "my_enum.rb".<br>
+
+The tests were made with RSpec and it is located in side ./spec folder.
+
+
 
 <!-- CONTRIBUTING -->
 ## Contributing
