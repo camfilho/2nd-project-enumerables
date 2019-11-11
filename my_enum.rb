@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Style/CaseEquality
 
 module Enumerable
   class Hash
@@ -173,4 +174,4 @@ def multiply_els(arr)
   arr.my_inject { |acc, el| acc * el }
 end
 
-puts multiply_els([2,3,4])
+puts multiply_els([2, 3, 4])
