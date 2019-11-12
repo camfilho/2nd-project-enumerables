@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/ModuleLength
 class Hash
   def <<(*hash)
     hash.my_each do |key, value|
@@ -64,6 +65,8 @@ module Enumerable
         return false unless item =~ pattern
       elsif pattern.is_a? Class
         return false unless item.is_a? pattern
+      elsif pattern
+        return false unless item == pattern
       elsif block_given?
         return false unless yield(item)
       else
@@ -79,6 +82,8 @@ module Enumerable
         return true if item =~ pattern
       elsif pattern.is_a? Class
         return true if item.is_a? pattern
+      elsif pattern
+        return true if item == pattern
       elsif block_given?
         return true if yield(item)
       elsif item
@@ -89,7 +94,7 @@ module Enumerable
   end
 
   def my_none?(pattern = nil, &block)
-    !my_all?(pattern, &block)
+    !my_any?(pattern, &block)
   end
 
   def my_count(item = nil)
@@ -110,7 +115,7 @@ module Enumerable
   def my_inject(*args)
     arg1 = args[0]
     arg2 = args[1]
-    new_object = dup
+    new_object = dup.to_a
     memo = arg1.is_a?(Symbol) || arg1.nil? ? new_object.shift : arg1
     new_object.my_each do |item|
       if block_given?

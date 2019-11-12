@@ -94,7 +94,7 @@ RSpec.describe Enumerable do
   describe '#my_all?' do
     context 'when class is passed as argument' do
       it 'returns true if all items are from the same class' do
-        arr = [0,1,2,3,4,5]
+        arr = [2, 2, 2, 2, 2, 2]
         expect(arr.my_all?(Numeric)).to eql(true)
       end
     end
@@ -144,8 +144,8 @@ RSpec.describe Enumerable do
   describe '#none?' do
     context 'when no block is given ' do
       it 'returns true only if none of the items is true' do
-        array = [nil, nil, nil]
-        expect(array.my_none?).to eql(true)
+        array = [nil, false, true, []]
+        expect(array.my_none?).to eql(array.none?)
       end
     end
     context 'when applied to a Hash and block given' do
