@@ -92,6 +92,12 @@ RSpec.describe Enumerable do
     end
   end
   describe '#my_all?' do
+    context 'when class is passed as argument' do
+      it 'returns true if all items are from the same class' do
+        arr = [0,1,2,3,4,5]
+        expect(arr.my_all?(Numeric)).to eql(true)
+      end
+    end
     context 'when no block is given' do
       it 'should return true if  none is false' do
         expect([1, 2].my_all?).to eql(true)

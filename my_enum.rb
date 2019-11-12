@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ModuleLength
-
+# rubocop:disable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
 class Hash
   def <<(*hash)
     hash.my_each do |key, value|
@@ -60,34 +59,30 @@ module Enumerable
   end
 
   def my_all?(pattern = nil)
-    if pattern
-      my_each do |i|
-        return false unless i.match? pattern
-      end
-    elsif block_given?
-      my_each do |i|
-        return false unless yield(i)
-      end
-    else
-      my_each do |i|
-        return false unless i
+    my_each do |item|
+      if pattern.is_a? Regexp
+        return false unless item =~ pattern
+      elsif pattern.is_a? Class
+        return false unless item.is_a? pattern
+      elsif block_given?
+        return false unless yield(item)
+      else
+        return false unless item
       end
     end
     true
   end
 
   def my_any?(pattern = nil)
-    if pattern
-      my_each do |i|
-        return true if i.match? pattern
-      end
-    elsif block_given?
-      my_each do |i|
-        return true if yield(i)
-      end
-    else
-      my_each do |i|
-        return true if i
+    my_each do |item|
+      if pattern.is_a? Regexp
+        return true if item =~ pattern
+      elsif pattern.is_a? Class
+        return true if item.is_a? pattern
+      elsif block_given?
+        return true if yield(item)
+      elsif item
+        return true
       end
     end
     false
@@ -129,6 +124,7 @@ module Enumerable
   end
 end
 
+# rubocop:enable Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/ModuleLength
 
 def multiply_els(arr)
