@@ -4,8 +4,8 @@ require './my_enum'
 
 RSpec.describe Enumerable do
   describe '#my_each' do
-    context 'when no block was given' do
-      subject { Array.new(10) { |i| i + 1 } }
+    context 'when there is not block given' do
+      subject { Array.new(20) { |i| i + 1 } }
       it 'returns an enumerable' do
         expect(subject.my_each.class).to eql(Enumerator)
       end
@@ -13,12 +13,12 @@ RSpec.describe Enumerable do
 
     context 'when neither Array or Hash was used' do
       it 'it should raise' do
-        expect { 10.my_each }.to raise_error
+        expect { 20.my_each }.to raise_error(NoMethodError)
       end
     end
 
     context 'when my_each returns' do
-      subject { Array.new(10) }
+      subject { Array.new(20) }
       it 'should return self' do
         expect(subject.my_each {}).to eql(subject)
       end
@@ -64,7 +64,7 @@ RSpec.describe Enumerable do
 
     context 'when neither Array or Hash was used' do
       it 'it should raise' do
-        expect { 10.my_each }.to raise_error
+        expect { 10.my_each }.to raise_error(NoMethodError)
       end
     end
 
