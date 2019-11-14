@@ -13,7 +13,7 @@ RSpec.describe Enumerable do
 
     context 'when neither Array or Hash was used' do
       it 'it should raise' do
-        expect { 20.my_each }.to raise_error
+        expect { 20.my_each }.to raise_error(NoMethodError)
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Enumerable do
 
     context 'when neither Array or Hash was used' do
       it 'it should raise' do
-        expect { 10.my_each }.to raise_error
+        expect { 10.my_each }.to raise_error(NoMethodError)
       end
     end
 
